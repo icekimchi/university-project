@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link href="{{ url_for('static', filename='css/style.css') }}?v=1" rel="stylesheet">
+  <title>OpenSourceProject</title>
+</head>
+<body>
+<script>
+  // 검색어 입력란의 값을 유지하는 함수
+  function persistSearchInput() {
+    var searchInput = document.getElementById('location');
+    var searchQuery = sessionStorage.getItem('searchQuery');
+
+    if (searchQuery) {
+      searchInput.value = searchQuery;
+    }
+
+    searchInput.addEventListener('input', function() {
+      sessionStorage.setItem('searchQuery', searchInput.value);
+    });
+  }
+
+  // 검색어를 기반으로 결과 필터링하는 함수
+  function filterResults() {
+    var searchQuery = sessionStorage.getItem('searchQuery');
+    var nameBoxes = document.getElementsByClassName('name-box');
+
+    for (var i = 0; i < nameBoxes.length; i++) {
+      var nameBox = nameBoxes[i];
+      var name = nameBox.getAttribute('data-name');
+      var type = nameBox.getAttribute('data-type');
+
+      if (name.includes(searchQuery) || type.includes(searchQuery)) {
+        nameBox.style.display = 'block';
+      } else {
+        nameBox.style.display = 'none';
+      }
+    }
+  }
+
+  // 페이지 로드 시 검색어 입력란의 값을 유지하고 결과 필터링하는 함수 호출
+  window.addEventListener('load', function() {
+    persistSearchInput();
+    filterResults();
+  });
+</script>
+
+  <div class="container">
+  <div class="region-container">
+    <div class="icon-container">
+      <a href="{{ url_for('index') }}" class="icon-link"></a>
+    </div>
+    <div class="region-search-container">
+      <form method="POST" action="{{ url_for('search') }}">
+        <div class="region-input-container">
+          <div class="region-input">
+            <input type="text" id="location" name="location" placeholder="캠핑장의 이름을 검색하세요">
+          </div>
+          <input class="region-button" type="submit" value="조회">
+        </div>
+        <div class="checkbox-container">
+          <label for="campground">물놀이장</label>
+          <input type="checkbox" id="campground" name="campground">
+          <label for="firewood">장작판매</label>
+          <input type="checkbox" id="firewood" name="firewood">
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="map" style="width:100%;height:400px;"></div>
+
+  <div class="result-container">
+    {% if result %}
+      {% for row in result %}
+        <div class="name-box">{{ row[0] }}</div>
+      {% endfor %}
+    {% endif %}
+  </div>
+
+  <!-- 네이버 지도 API 호출 및 지도 생성 스크립트 -->
+  <script src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=460x45o18u&submodules=geocoder"></script>
+  <script>
+    var mapOptions = {
+      zoom: 10
+    };
+
+    var map = new naver.maps.Map('map', mapOptions);
+    var bounds = new naver.maps.LatLngBounds();
+    var markers = [];
+
+    {% if result %}
+      {% for row in result %}
+        var position = new naver.maps.LatLng({{ row[2] }}, {{ row[3] }});
+        bounds.extend(position);
+
+        var marker = new naver.maps.Marker({
+          position: position,
+          map: map
+        });
+
+        markers.push(marker);
+
+        var content = `
+          <div class="info-window-content">
+              <h3>{{ row[0] }}</h3>
+              <p>캠핑장 종류: {{ row[1] }}</p>
+              <p>주소 : {{ row[4] }}</p>
+              <p>일반야영장수 : {{ row[5] }}</p>
+              <p>자동차야영장수: {{ row[6] }}</p>
+              <p>글램핑수 : {{ row[7] }}</p>
+              <p>카라반수 : {{ row[8] }}</p>
+              <p>부대시설 : {{ row[9] }}</p>
+          </div>
+        `;
+
+        var infoWindow = new naver.maps.InfoWindow({
+          content: content,
+          anchorSkew: true
+        });
+
+        (function(marker, infoWindow) {
+          var nameBox = document.getElementsByClassName('name-box')[{{ loop.index0 }}];
+          nameBox.addEventListener('click', function() {
+            if (infoWindow.getMap()) {
+              infoWindow.close();
+            } else {
+              infoWindow.open(map, marker);
+            }
+          });
+
+          naver.maps.Event.addListener(marker, 'click', function(e) {
+            if (infoWindow.getMap()) {
+              infoWindow.close();
+            } else {
+              infoWindow.open(map, marker);
+            }
+          });
+        })(marker, infoWindow);
+      {% endfor %}
+
+      map.fitBounds(bounds);
+    {% endif %}
+  </script>
+  </div>
+</body>
+</html>
+

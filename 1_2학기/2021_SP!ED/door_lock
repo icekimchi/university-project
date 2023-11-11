@@ -1,0 +1,105 @@
+#include <Wire.h>
+int red_light_pin= 11;
+int green_light_pin = 10;
+int blue_light_pin = 9;
+int valvepin = 4;    // magnetic valve
+const int vol_pin = 1;    // pascal
+#define echoPin 2 // attach pin D2 Arduino to pin Echo of HC-SR04
+#define trigPin 3 //attach pin D3 Arduino to pin Trig of HC-SR04
+const int RELAY_PIN = A5; // pump
+const int door = 5;  // the Arduino pin, which connects to the IN pin of dooor
+int sensePin = A0;  //This is the Arduino Pin that will read the sensor output
+int sensorInput;    //The variable we will use to store the sensor input
+double temp;        //The variable we will use to store temperature in degrees. 
+int vol_value = 0;  
+#define Addr 0x50        // ADC121C_MQ3 I2C address is 0x50(90)
+long duration; // variable for the duration of sound wave travel
+int distance; // variable for the distance measurement
+int datafromUser = 0;
+
+
+
+void setup() {
+  Wire.begin();           // Initialise I2C communication as MASTER
+  Serial.begin( 9600 );    // Initialise serial communication, set baud rate = 9600
+  pinMode(red_light_pin, OUTPUT);
+  pinMode(green_light_pin, OUTPUT);
+  pinMode(blue_light_pin, OUTPUT);
+  pinMode(valvepin, OUTPUT);
+  pinMode(RELAY_PIN, OUTPUT);
+ pinMode(door, OUTPUT);
+ pinMode(trigPin, OUTPUT); // Sets the trigPin as an OUTPUT
+  pinMode(echoPin, INPUT); // Sets the echoPin as an INPUT
+  sleepTime = 50000;
+}
+ 
+void loop() {
+    if ( Serial.available() > 0)
+    {
+      datafromUser = Serial.read();
+    }
+    if(datafromUser > 1){
+    unsigned int data[2];
+    
+    digitalWrite(RELAY_PIN, LOW); // lock the door
+    
+    RGB_color(247, 202, 24); // yellow  turn on the lights
+    delay(1000); 
+    
+    vol_value = analogRead( vol_pin );  // feel the products 
+    
+    digitalWrite(trigPin, LOW);
+    delayMicroseconds(2);// Sets the trigPin HIGH (ACTIVE) for 10 microseconds
+    digitalWrite(trigPin, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(trigPin, LOW);// Reads the echoPin, returns the sound wave travel time in microseconds
+    duration = pulseIn(echoPin, HIGH);// Calculating the distance
+    distance = duration * 0.034 / 2; // Speed of sound wave divided by 2 (go and back)
+ 
+    if (vol_value > 0 && (distance = 10) ){
+      digitalWrite(RELAY_PIN, HIGH); // lock the door
+      delay(1000);
+      RGB_color(255, 0, 0); // Red  turn on the lights
+      
+      digitalWrite(valvepin, HIGH);//Opens the valve for 5 seconds
+      delay(1000);
+      digitalWrite(RELAY_PIN, HIGH); // turn on pump 5 seconds
+      delay(5000);
+      digitalWrite(RELAY_PIN, LOW);  // turn off pump 
+      digitalWrite(valvepin, LOW);  //Close the valve 
+    }  
+    
+    Wire.beginTransmission(Addr);    // Start I2C Transmission
+    Wire.write(0x00);       // Select data register
+    Wire.endTransmission();   // Stop I2C transmission
+    Wire.requestFrom(Addr, 2);   // Request 2 bytes of data
+    
+    if(Wire.available() == 2)  // Read 2 bytes of data,   raw_adc msb, raw_adc lsb
+    {
+      data[0] = Wire.read();
+      data[1] = Wire.read();
+      }
+    int raw_adc = ((data[0] & 0x0F) * 256) + data[1];   // Convert the data to 12-bits   
+    float concentration = (9.95 / 4096.0) * raw_adc + 0.05;    // put your main code here, to run repeatedly: 
+    if(concentration > 60) {
+    
+    }
+   sensorInput = analogRead(A0);    //read the analog sensor and store it
+   temp = (double)sensorInput / 1024;       //find percentage of input reading
+   temp = temp * 5;                 //multiply by 5V to get voltage
+   temp = temp - 0.5;               //Subtract the offset 
+   temp = temp * 100;               //Convert to degrees 
+   if(temp > 26 ) {
+     exit(0);
+    }
+   RGB_color(0, 255, 0); // Green turn on the lights
+   delay(1000);
+   }
+}
+
+void RGB_color(int red_light_value, int green_light_value, int blue_light_value)
+{
+  analogWrite(red_light_pin, red_light_value);
+  analogWrite(green_light_pin, green_light_value);
+  analogWrite(blue_light_pin, blue_light_value);
+}

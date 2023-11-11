@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link href="{{ url_for('static', filename='css/style.css') }}?v=1" rel="stylesheet">
+  <title>OpenSourceProject</title>
+</head>
+<body>
+  <div class="icon-container">
+    <a href="{{ url_for('index') }}" class="icon-link"></a>
+  </div>
+  <div class="banner-container">
+    <div class="text-container">
+      <h4 class="banner_text"><span class="font_size_90">충청북도</span> </br>Camping Site</h4>
+      <p class="explain_text">This website is a site created by an open-source project </br>by Jeonghyun and Suyeon. </p>
+    </div>
+    <div class="search-container">
+      <form method="POST" action="{{ url_for('search') }}">
+        <div class="search-input-container">
+          <div class="search-input">
+            <input type="text" id="location" name="location" placeholder="캠핑장의 이름을 검색하세요">
+          </div>
+          <div class="search-button-container">
+            <input class="search-button" type="submit" value="조회">
+          </div>
+        </div>
+        <div class="checkbox-container">
+          <label for="campground">물놀이장</label>
+          <input type="checkbox" id="campground" name="campground">
+          <label for="firewood">장작판매</label>
+          <input type="checkbox" id="firewood" name="firewood">
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="location-container">
+    <div class="location-images">
+      <a href="{{ url_for('region', location='단양') }}"><div class="location-image image1"></div></a>
+      <a href="{{ url_for('region', location='제천') }}"><div class="location-image image2"></div></a>
+      <a href="{{ url_for('region', location='옥천') }}"><div class="location-image image4"></div></a>
+      <a href="{{ url_for('region', location='영동') }}"><div class="location-image image5"></div></a>
+      <a href="{{ url_for('region', location='청주') }}"><div class="location-image image6"></div></a>
+      <a href="{{ url_for('region', location='진천') }}"><div class="location-image image7"></div></a>
+      <a href="{{ url_for('region', location='충주') }}"><div class="location-image image8"></div></a>
+      <a href="{{ url_for('region', location='음성') }}"><div class="location-image image9"></div></a>
+      <a href="{{ url_for('region', location='증평') }}"><div class="location-image image10"></div></a>
+    </div>
+  </div>
+</body>
+</html>
+
+

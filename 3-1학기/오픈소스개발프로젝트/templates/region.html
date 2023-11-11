@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link href="{{ url_for('static', filename='css/style.css') }}?v=1" rel="stylesheet">
+  <script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=5vgjelhj72"></script>
+</head>
+<body>
+  <div class="region-container">
+    <div class="icon-container">
+      <a href="{{ url_for('index') }}" class="icon-link"></a>
+    </div>
+    <div class="region-search-container">
+      <form method="POST" action="{{ url_for('search') }}">
+        <div class="region-input-container">
+          <div class="region-input">
+            <input type="text" id="location" name="location" placeholder="캠핑장의 이름을 검색하세요">
+          </div>
+          <input class="region-button" type="submit" value="조회">
+        </div>
+        <div class="checkbox-container">
+          <label for="campground">물놀이장</label>
+          <input type="checkbox" id="campground" name="campground">
+          <label for="firewood">장작판매</label>
+          <input type="checkbox" id="firewood" name="firewood">
+        </div>
+      </form>
+    </div>
+  </div>
+  <div id="map" style="width:100%;height:400px;"></div>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var mapOptions = {
+      zoom: 10
+    };
+
+    var map = new naver.maps.Map('map', mapOptions);
+    var bounds = new naver.maps.LatLngBounds();
+    var markers = [];
+
+    {% if result %}
+      {% for row in result %}
+        var position = new naver.maps.LatLng({{ row[2] }}, {{ row[3] }});
+        bounds.extend(position);
+
+        var marker = new naver.maps.Marker({
+          position: position,
+          map: map
+        });
+
+        markers.push(marker);
+
+        var content = `
+          <div class="info-window-content">
+              <h3>{{ row[0] }}</h3>
+              <p>캠핑장 종류: {{ row[1] }}</p>
+              <p>주소 : {{ row[4] }}</p>
+              <p>일반야영장수 : {{ row[5] }}</p>
+              <p>자동차야영장수: {{ row[6] }}</p>
+              <p>글램핑수 : {{ row[7] }}</p>
+              <p>카라반수 : {{ row[8] }}</p>
+              <p>부대시설 : {{ row[9] }}</p>
+          </div>
+        `;
+
+        var infoWindow = new naver.maps.InfoWindow({
+          content: content,
+          anchorSkew: true
+        });
+
+        (function(marker, infoWindow) {
+          naver.maps.Event.addListener(marker, 'click', function(e) {
+            if (infoWindow.getMap()) {
+              infoWindow.close();
+            } else {
+              infoWindow.open(map, marker);
+            }
+          });
+
+          var nameBoxes = document.getElementsByClassName('name-box');
+          var nameBox = nameBoxes[{{ loop.index0 }}];
+          nameBox.addEventListener('click', function() {
+            if (infoWindow.getMap()) {
+              infoWindow.close();
+            } else {
+              infoWindow.open(map, marker);
+            }
+          });
+        })(marker, infoWindow);
+      {% endfor %}
+
+      map.fitBounds(bounds);
+    {% endif %}
+  });
+  </script>
+
+
+  <div class="result-container">
+    {% if result %}
+      {% for row in result %}
+        <div class="name-box">{{ row[0] }}</div>
+      {% endfor %}
+    {% endif %}
+  </div>
+</body>
+</html>
+

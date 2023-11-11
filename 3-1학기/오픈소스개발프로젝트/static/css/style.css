@@ -1,0 +1,395 @@
+
+/* banner */
+.banner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  height: 600px;
+  background-image: url('../images/banner-bg.png');
+  color: white;
+  margin: 0px auto 0;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+.icon-container{
+  display: flex;
+  justify-content: center;
+  width: 200px;
+  height: 100px;
+  align-items: center;
+  background-image: url('../images/icon.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  margin: 0 auto;
+}
+
+.icon-link {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.text-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 800px;
+  height: 200px;
+}
+
+.banner_text {
+  width: 100%;
+  height: 100px;
+  float: left;
+  font-size: 60px;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.font_size_90 {
+  font-size: 80px;
+}
+
+.explain_text {
+  width: 100%;
+  float: left;
+  font-size: 16px;
+  color: #ffffff;
+  margin-left: 0px;
+}
+
+
+/* serach */
+.search-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  width: 800px;
+  background-color: rgba(255, 255, 255, 0.5);
+  color: white;
+  margin: 0 auto;
+  margin-top: 100px;
+}
+
+.search-input-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+.search-input {
+  display: flex;
+  align-items: center;
+}
+
+.search-input input {
+  width: 400px;
+  height: 40px;
+  font-size: 16px;
+  padding: 5px;
+}
+
+.search-input input::placeholder {
+  color: #999;
+}
+.search-input label {
+  margin-right: 5px;
+}
+
+.search-button {
+  padding: 5px 10px;
+  font-size: 24px;
+  background-color: gray;
+  color: white;
+  border: none;
+  cursor: pointer;
+  margin-left: 5px;
+}
+
+.search-button:hover {
+  background-color: rgba( 255, 255, 255, 0.5 );
+  color: black;
+}
+
+/* 체크박스 */
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  margin-top : 10px;
+}
+
+.checkbox-container label {
+  margin-right: 10px;
+}
+
+.checkbox-container input[type="checkbox"] {
+  margin-right: 5px;
+}
+
+/*위치 출력*/
+
+.location-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  margin-top: 10px;
+  margin-left: 50px;
+  margin-right: 50px;
+  border: 1px solid black;
+  border-radius: 50px;
+}
+
+.location-container {
+  display: flex;
+  align-items: center;
+  margin-top: 50px;
+  margin-left: 50px;
+  margin-right: 50px;
+  background-color: white;
+}
+
+.location-images {
+  display: flex;
+  overflow-x: hidden;
+  justify-content: center;
+  align-items: center;
+}
+
+.location-image {
+  flex-shrink: 0;
+  width: 130px;
+  height: 120px;
+  margin-right: 10px;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: background-image 0.3s ease-in-out;
+}
+
+.location-button {
+  font-size: 30px;
+  cursor: pointer;
+}
+
+.image1 {
+  background-image: url('../images/location-1.png');
+}
+.image2 {
+  background-image: url('../images/location-2.png');
+}
+.image3 {
+  background-image: url('../images/location-3.png');
+}
+.image4 {
+  background-image: url('../images/location-4.png');
+}
+.image5 {
+  background-image: url('../images/location-5.png');
+}
+.image6 {
+  background-image: url('../images/location-6.png');
+}
+.image7 {
+  background-image: url('../images/location-7.png');
+}
+.image8 {
+  background-image: url('../images/location-8.png');
+}
+.image9 {
+  background-image: url('../images/location-9.png');
+}
+.image10 {
+  background-image: url('../images/location-10.png');
+}
+.location-image.image1:hover {
+  background-image: url('../images/hover-1.png');
+}
+.location-image.image2:hover {
+  background-image: url('../images/hover-2.png');
+}
+.location-image.image3:hover {
+  background-image: url('../images/hover-3.png');
+}
+.location-image.image4:hover {
+  background-image: url('../images/hover-4.png');
+}
+.location-image.image5:hover {
+  background-image: url('../images/hover-5.png');
+}
+.location-image.image6:hover {
+  background-image: url('../images/hover-6.png');
+}
+.location-image.image7:hover {
+  background-image: url('../images/hover-7.png');
+}
+.location-image.image8:hover {
+  background-image: url('../images/hover-8.png');
+}
+.location-image.image9:hover {
+  background-image: url('../images/hover-9.png');
+}
+.location-image.image10:hover {
+  background-image: url('../images/hover-10.png');
+}
+
+/* search.html */
+.name-box {
+  width: calc(18% - 10px);
+  height: 50px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: black;
+  pointer-events: auto;
+  cursor: pointer;
+  flex: 0 0 calc(20% - 10px);
+  margin-bottom: 10px;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease-in-out;
+}
+
+.name-box:hover {
+  background-color: #f2f2f2;
+  color: black;
+}
+@media (max-width: 800px) {
+  .name-box {
+    width: 25%;
+  }
+}
+
+@media (max-width: 600px) {
+  .name-box {
+    width: 50%;
+  }
+}
+
+.region-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  height: 250px;
+  background-image: url('../images/banner-bg.png');
+  color: white;
+  margin: 10px auto 0;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+.region-search-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 120px;
+  width: 800px;
+  background-color: rgba(255, 255, 255, 0.5);
+  color: white;
+  margin: 0 auto;
+}
+
+.region-input-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.region-input {
+  display: flex;
+  align-items: center;
+}
+
+.region-input input {
+  width: 400px;
+  height: 40px;
+  font-size: 16px;
+  padding: 5px;
+}
+
+.region-input input::placeholder {
+  color: #999;
+}
+.region-input label {
+  margin-right: 5px;
+}
+
+.region-button {
+  padding: 5px 10px;
+  font-size: 24px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  margin-left: 5px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.region-button:hover {
+  background-color: #45a049;
+  color: black;
+}
+
+.result-container {
+    display: flex;
+    flex-wrap: wrap;
+    background-color: white;
+    padding: 10px;
+    border-radius: 4px;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.center {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+.underline {
+      border-bottom: 1px dotted #000;
+    }
+
+
+/*글꼴 변경*/
+.info-window-content {
+  font-family: sans-serif; /* 변경하고자 하는 글꼴 설정 */
+  font-size: 14px; /* 원하는 글꼴 크기 설정 */
+  line-height: 1.5; /* 줄 간격 설정 */
+}
+
+.info-window-content p {
+  margin-left: 10px; /* 요소 사이의 하단 간격을 조정합니다. */
+  margin-right: 10px;
+}
+
+.info-window-content h3 {
+  font-size: 20px;
+  margin-top: 10px; /* 요소 하단의 마진 값을 조정합니다. */
+  margin-left: 10px; /* 요소 사이의 하단 간격을 조정합니다. */
+  margin-right: 10px;
+  border-bottom: 1px solid #ccc; /* 가로선 스타일 설정 */
+  background-color: #f5f5f5; /* 배경색 설정 */
+}
+
+
