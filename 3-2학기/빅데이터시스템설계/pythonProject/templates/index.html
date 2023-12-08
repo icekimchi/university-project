@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>따릉이 조회 서비스</title>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=d89e48dde029636bf1426d6ea4842501"></script>
+    <style>
+        #result-table {
+            max-height: 300px; /* Set the maximum height for the table */
+            overflow-y: auto; /* Enable vertical scrollbar if needed */
+            position: relative;
+            z-index: 1; /* Set z-index to 1 for the table */
+        }
+        #map {
+            width: 100%;
+            height: 400px;
+            position: relative;
+            z-index: 0; /* Set z-index to 0 for the map */
+        }
+    </style>
+</head>
+<body>
+    <form action="/" method="GET">
+        <label for="region">지역 선택:</label>
+        <select name="region" id="region">
+            {% for region in regions %}
+                <option value="{{ region }}">{{ region }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">조회</button>
+    </form>
+
+    <form action="/user_history" method="POST">
+        <label for="user_email">사용자 이메일:</label>
+        <input type="email" id="user_email" name="user_email" required>
+        <button type="submit">조회</button>
+    </form>
+
+    {% if selected_region %}
+        <h2>선택한 지역: {{ selected_region }}</h2>
+        <p>총 거치대 수: {{ result|length }}</p>
+        <div id="result-table">
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>p_id</th>
+                        <th>add_1</th>
+                        <th>add_2</th>
+                        <th>lat</th>
+                        <th>lot</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in result %}
+                        {% if row[3] != 0 and row[4] != 0 %}
+                            <tr>
+                                <td>{{ row[0] }}</td>
+                                <td>{{ row[1] }}</td>
+                                <td>{{ row[2] }}</td>
+                                <td>{{ row[3] }}</td>
+                                <td>{{ row[4] }}</td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Kakao 지도를 표시할 div -->
+        <div id="map"></div>
+
+        <script>
+            // 결과 데이터에서 좌표 정보 가져오기
+            var markers = [
+                {% for row in result if row[3] != 0 and row[4] != 0 %}
+                    {
+                        lat: {{ row[3] }},
+                        lng: {{ row[4] }}
+                    },
+                {% endfor %}
+            ];
+
+            // 지도 생성
+            var map = new kakao.maps.Map(document.getElementById('map'), {
+                center: new kakao.maps.LatLng(markers[0].lat, markers[0].lng),
+                level: 10
+            });
+
+            // LatLngBounds 객체 생성
+            var bounds = new kakao.maps.LatLngBounds();
+
+            // 마커 표시 및 bounds에 좌표 추가
+            for (var i = 0; i < markers.length; i++) {
+                var marker = new kakao.maps.Marker({
+                    position: new kakao.maps.LatLng(markers[i].lat, markers[i].lng)
+                });
+                marker.setMap(map);
+                bounds.extend(new kakao.maps.LatLng(markers[i].lat, markers[i].lng));
+            }
+
+            // 모든 마커를 포함하는 지도 영역으로 지도 조절
+            map.setBounds(bounds);
+        </script>
+    {% endif %}
+</body>
+</html>

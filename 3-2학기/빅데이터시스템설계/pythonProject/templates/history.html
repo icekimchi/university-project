@@ -1,0 +1,127 @@
+<!-- templates/user_history.html -->
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>User History</title>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=d89e48dde029636bf1426d6ea4842501"></script>
+</head>
+<body>
+    <h2>사용자 {{ user_email }}의 사용기록</h2>
+    <p id="total_price">총 금액: {{ total_price }}</p>
+    <p id="total_usage_time">총 사용시간: {{ total_usage_time }}</p>
+    <!-- 기록 ID에 링크를 걸고 클릭 시 경로 표시 -->
+    {% if result %}
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>기록 ID</th>
+                    <th>가격</th>
+                    <th>시작 시간</th>
+                    <th>종료 시간</th>
+                    <th>출발 장소</th>
+                    <th>도착 장소</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in result %}
+                    <tr>
+                        <!-- 수정: 함수 호출 부분의 작은 오타 수정 -->
+                        <td><a href="#" onclick="showPath('{{ row[0] }}');">{{ row[0] }}</a></td>
+                        <td>{{ row[1] }}</td>
+                        <td>{{ row[2] }}</td>
+                        <td>{{ row[3] }}</td>
+                        <td>{{ row[4] }}</td>
+                        <td>{{ row[5] }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Kakao Map을 표시할 div -->
+        <div id="map" style="width: 1000px; height: 400px;"></div>
+
+        <!-- 클릭한 기록에 대한 경로 표시하는 스크립트 -->
+    <script>
+        function showPath(history_id) {
+            // Ajax를 사용하여 서버에 데이터 요청
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', '/get_path_coordinates/' + history_id, true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        // 요청이 성공하면 결과를 받아옴
+                        var result = JSON.parse(xhr.responseText).result;
+
+                        if (result) {
+                            var departureCoordinates = [result[0], result[1]];
+                            var destinationCoordinates = [result[2], result[3]];
+
+                            // 지도 생성
+                            var mapContainer = document.getElementById('map');
+                            var mapOptions = {
+                                center: new kakao.maps.LatLng(departureCoordinates[0], departureCoordinates[1]),
+                                level: 3
+                            };
+                            var map = new kakao.maps.Map(mapContainer, mapOptions);
+
+                            // 출발 대여소 마커
+                            var departureMarker = new kakao.maps.Marker({
+                                position: new kakao.maps.LatLng(departureCoordinates[0], departureCoordinates[1])
+                            });
+                            departureMarker.setMap(map);
+
+                            // 도착 대여소 마커
+                            var destinationMarker = new kakao.maps.Marker({
+                                position: new kakao.maps.LatLng(destinationCoordinates[0], destinationCoordinates[1])
+                            });
+                            destinationMarker.setMap(map);
+
+                            // 출발지에서 도착지까지 선을 표시
+                            var linePath = [
+                                new kakao.maps.LatLng(departureCoordinates[0], departureCoordinates[1]),
+                                new kakao.maps.LatLng(destinationCoordinates[0], destinationCoordinates[1])
+                            ];
+
+                            var polyline = new kakao.maps.Polyline({
+                                path: linePath,
+                                strokeWeight: 3,
+                                strokeColor: '#FF0000',
+                                strokeOpacity: 0.8,
+                                strokeStyle: 'solid'
+                            });
+
+                            // 마커와 선을 지도에 표시
+                            polyline.setMap(map);
+                            departureMarker.setMap(map);
+                            destinationMarker.setMap(map);
+
+                            // 출발지와 도착지 좌표를 이용하여 경계 상자 계산
+                            var bounds = new kakao.maps.LatLngBounds();
+                            bounds.extend(new kakao.maps.LatLng(departureCoordinates[0], departureCoordinates[1]));
+                            bounds.extend(new kakao.maps.LatLng(destinationCoordinates[0], destinationCoordinates[1]));
+
+                            // 경계 상자에 맞춰 맵 크기 조정
+                            map.setBounds(bounds);
+                        } else {
+                            console.error('경로 데이터를 가져올 수 없습니다.');
+                        }
+                    } else {
+                        console.error('경로 데이터를 가져오는 도중 오류가 발생했습니다.');
+                    }
+                }
+            };
+            xhr.send();
+        }
+
+        // showPath 함수를 전역으로 등록
+        window.showPath = showPath;
+    </script>
+
+
+    {% else %}
+        <p>사용자의 사용기록이 없습니다.</p>
+    {% endif %}
+</body>
+</html>
